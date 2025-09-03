@@ -1,0 +1,10 @@
+data/
+checkpoints_segmentation/
+runs/
+wandb/
+*.pth
+*.pyc
+*.tar
+*.gz
+*.env
+run_vicreg.sh

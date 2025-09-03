@@ -1,0 +1,22 @@
+program: training_and_experiments/segmentation_sweep_trainer.py 
+method: bayes
+metric:
+  name: f1
+  goal: maximize
+parameters:
+  t:
+    values: [1, 2, 3, 4, 5]
+  background_importance:
+    values: [0.05, 0.1, 0.2, 0.3]
+  gamma:
+    distribution: uniform
+    min: 1
+    max: 2
+  learning_rate:
+    distribution: uniform
+    min: 0.000001
+    max: 0.01
+  base_filters:
+    values: [8, 16, 32]
+  depth:
+    values: [3, 4, 5, 6, 7]
