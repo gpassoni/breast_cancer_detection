@@ -1,0 +1,15 @@
+{
+    "val_ratio": 0.1,
+    "batch_size": 4,
+    "init_type": "kaiming",
+    "loss": "focal_tversky",
+    "lr": 0.0015933,
+    "n_epochs": 200,
+    "t": 4,
+    "base_filters": 8,
+    "depth": 6,
+    "alpha": 0.56814,
+    "gamma": 1.52575,
+    "accum_steps": 4,
+    "task_type": "multiclass"
+}
