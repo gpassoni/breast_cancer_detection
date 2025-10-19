@@ -4,12 +4,17 @@ import torch
 from torch.utils.data import DataLoader, random_split
 import torch.optim as optim
 import pandas as pd
+import os
+from dotenv import load_dotenv
 
 from scripts.preprocessing.data_loader import ThermalDataset
 from scripts.models.R2AU_dynamic import R2AttU_Net, init_weights, EarlyStopping
 from scripts.models.losses import *
 from scripts.models.metrics import *
 from scripts.models.trainer import Trainer
+
+# Load environment variables
+load_dotenv()
 
 start_time = time.time()
 torch.backends.cudnn.benchmark = True
@@ -31,8 +36,9 @@ for fold in range(cv_folds):
     print(f"Starting fold {fold + 1}/{cv_folds}")
 
     wandb.init(
-        project="segmentation_bcxtt",
-        name=f"cv_test_best_run_fold_{fold + 1}",
+        project=os.getenv("WANDB_PROJECT", "segmentation_bcxtt"),
+        entity=os.getenv("WANDB_ENTITY", None),
+        name=f"cv_fold_{fold + 1}",
         config={
             "val_ratio": 0.1,
             "batch_size": 4,

@@ -186,8 +186,9 @@ for exp_name, exp in exp_dict.items():
     for fold in range(cv_folds):
         # --- WANDB SETUP ---
         wandb.init(
-            project="Augmentation Ablation Study Test v3 best model",
-            name=f"{exp_name} - fold {fold}",
+            project=os.getenv("WANDB_PROJECT", "Augmentation Ablation Study"),
+            entity=os.getenv("WANDB_ENTITY", None),
+            name=f"{exp_name}_fold_{fold}",
             config={
                 "val_ratio": 0.1,
                 "batch_size": 4,
