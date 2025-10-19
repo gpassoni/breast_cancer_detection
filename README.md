@@ -104,23 +104,50 @@ API_PORT=8000
 
 ### 3. Running the Application
 
-#### Start the API Server
+#### Option A: Using Helper Scripts (Recommended for Development)
 
+**Start the API Server:**
+```bash
+./run_api.sh
+```
+The API will be available at `http://localhost:8000`
+
+**Start the Streamlit Web Interface (in a new terminal):**
+```bash
+./run_app.sh
+```
+The web interface will open in your browser at `http://localhost:8501`
+
+#### Option B: Using Docker (Recommended for Production)
+
+```bash
+# Build and start both API and web interface
+docker-compose up -d
+
+# View logs
+docker-compose logs -f
+
+# Stop services
+docker-compose down
+```
+
+The services will be available at:
+- API: `http://localhost:8000`
+- Web Interface: `http://localhost:8501`
+
+#### Option C: Manual Execution
+
+**API Server:**
 ```bash
 cd breast_cancer_detection
 python -m api.main
 ```
 
-The API will be available at `http://localhost:8000`
-
-#### Start the Streamlit Web Interface
-
+**Streamlit Interface:**
 ```bash
 cd breast_cancer_detection
 streamlit run app/main.py
 ```
-
-The web interface will open in your browser at `http://localhost:8501`
 
 ### 4. Using the API
 
@@ -166,13 +193,15 @@ python downstream_classification_trainer.py
 - Streamlit web interface
 - Environment-based configuration
 - Clean, modular code structure
+- Docker support for easy deployment
+- Helper scripts for development
 
 ### 🚧 Coming Soon
 - Classification model integration
 - Full prediction pipeline
 - Batch processing
-- Docker deployment
 - Model versioning
+- Automated tests
 
 ## Development
 
