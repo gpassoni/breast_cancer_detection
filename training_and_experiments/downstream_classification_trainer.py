@@ -18,8 +18,10 @@ from sklearn.metrics import classification_report, accuracy_score, f1_score, pre
 
 from pathlib import Path
 from dotenv import load_dotenv
+
+# Load environment variables
 load_dotenv()
-ROOT_DIR = Path(os.getenv("ROOT_DIR"))
+ROOT_DIR = Path(os.getenv("ROOT_DIR", "/path/to/data"))
 
 lab_db_path = ROOT_DIR / "data" / "dmrir" / "lab_database" / "database"
 label_1_path = "abnormal/"
@@ -151,8 +153,9 @@ optimizer = optim.Adam(model.fc.parameters(), lr=1e-5)
 early_stopping = EarlyStopping(patience=5, delta=0.001)
 
 wandb.init(
-    project="DownStreamDMRIR",
-    name="prova_fulldf_1_only_class_layer",
+    project=os.getenv("WANDB_PROJECT", "DownStreamDMRIR"),
+    entity=os.getenv("WANDB_ENTITY", None),
+    name="classification_training",
     config={
         "learning_rate": 1e-5,
         "batch_size": 64,
