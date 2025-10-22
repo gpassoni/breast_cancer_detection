@@ -21,9 +21,14 @@ import os
 from pathlib import Path
 from dotenv import load_dotenv
 
+# Load environment variables
+load_dotenv()
+
+# Initialize wandb with environment variables
 wandb.init(
-    project="Augmented Segmentation",
-    name="prova1",
+    project=os.getenv("WANDB_PROJECT", "Augmented Segmentation"),
+    entity=os.getenv("WANDB_ENTITY", None),
+    name="segmentation_training",
     config={
         "val_ratio": 0.1,
         "batch_size": 4,

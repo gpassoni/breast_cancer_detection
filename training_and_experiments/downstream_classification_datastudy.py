@@ -186,8 +186,9 @@ for n_samples in trials:
         early_stopping = EarlyStopping(patience=10, delta=0.001)
 
         wandb.init(
-            project="DownStreamDMRIR_data_study_V2",
-            name=f"DMRIR_Classification_{n_samples}_samples_cv_{i}_fulltest",
+            project=os.getenv("WANDB_PROJECT", "DownStreamDMRIR_data_study"),
+            entity=os.getenv("WANDB_ENTITY", None),
+            name=f"DMRIR_Classification_{n_samples}_samples_cv_{i}",
             config={
                 "learning_rate": 1e-5,
                 "batch_size": 64,
