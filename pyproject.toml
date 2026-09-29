@@ -1,0 +1,43 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "thermal-bc"
+version = "1.0.0"
+description = "Breast cancer detection from thermal images with R2AttU-Net segmentation and VICReg self-supervised learning."
+readme = "README.md"
+license = { file = "LICENSE" }
+authors = [{ name = "Gabriele Passoni" }]
+requires-python = ">=3.10"
+dependencies = [
+    "torch>=2.0",
+    "torchvision>=0.15",
+    "torchmetrics>=1.0",
+    "numpy>=1.24",
+    "opencv-python>=4.8",
+    "pillow>=10.0",
+    "scikit-image>=0.21",
+    "scikit-learn>=1.3",
+    "pandas>=2.0",
+    "matplotlib>=3.7",
+    "albumentations>=2.0",
+    "wandb>=0.16",
+    "python-dotenv>=1.0",
+    "flyr>=3.3",
+]
+
+[project.optional-dependencies]
+notebooks = ["jupyter>=1.0", "seaborn>=0.13"]
+dev = ["ruff>=0.5"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+ignore = ["N801", "B905"]
