@@ -1,11 +1,19 @@
+"""PyTorch dataset for the thermal breast segmentation images and masks."""
+
 import os
-from PIL import Image
+
+import cv2
 import numpy as np
 import torch
+from PIL import Image
 from torch.utils.data import Dataset
-import cv2
+
 
 def split_left_right_breasts(mask: np.ndarray) -> np.ndarray:
+    """Turn a binary breast mask into a label map: 0 background, 1 left breast, 2 right breast.
+
+    The two largest connected components are kept and ordered by horizontal centroid.
+    """
     mask = np.array(mask).astype(np.uint8)
     mask_bin = (mask > 0).astype(np.uint8)
     num_labels, labeled = cv2.connectedComponents(mask_bin)
@@ -33,6 +41,13 @@ def split_left_right_breasts(mask: np.ndarray) -> np.ndarray:
 
 
 class ThermalDataset(Dataset):
+    """Thermal images (.png/.jpg/.npy) with optional segmentation masks.
+
+    Images are resized and min-max normalised to [0, 1]. `global_transform` (light) and
+    `heavy_transform` (ablation-specific) are Albumentations pipelines applied in sequence.
+    With `multiclass=True` the mask is split into left/right breast labels.
+    """
+
     def __init__(
         self,
         images_dir: str,
@@ -51,15 +66,21 @@ class ThermalDataset(Dataset):
         self.global_transform = global_transform
         self.heavy_transform = heavy_transform
 
-        self.image_files = sorted([
-            f for f in os.listdir(images_dir)
-            if f.lower().endswith(('.png', '.jpg', '.jpeg', '.npy'))
-        ])
+        self.image_files = sorted(
+            [
+                f
+                for f in os.listdir(images_dir)
+                if f.lower().endswith((".png", ".jpg", ".jpeg", ".npy"))
+            ]
+        )
         if masks_dir:
-            self.mask_files = sorted([
-                f for f in os.listdir(masks_dir)
-                if f.lower().endswith(('.png', '.jpg', '.jpeg', '.npy'))
-            ])
+            self.mask_files = sorted(
+                [
+                    f
+                    for f in os.listdir(masks_dir)
+                    if f.lower().endswith((".png", ".jpg", ".jpeg", ".npy"))
+                ]
+            )
         else:
             self.mask_files = None
 
@@ -67,14 +88,13 @@ class ThermalDataset(Dataset):
         return len(self.image_files)
 
     def load_image(self, path: str) -> np.ndarray:
-        if path.lower().endswith('.npy'):
+        if path.lower().endswith(".npy"):
             arr = np.load(path)
         else:
-            arr = np.array(Image.open(path).convert('L'))
+            arr = np.array(Image.open(path).convert("L"))
         return arr.astype(np.float32)
 
     def __getitem__(self, idx: int):
-        name = os.path.splitext(self.image_files[idx])[0]
         img_path = os.path.join(self.images_dir, self.image_files[idx])
         img = self.load_image(img_path)
         img = cv2.resize(img, (self.width, self.height), interpolation=cv2.INTER_AREA)
@@ -97,17 +117,17 @@ class ThermalDataset(Dataset):
 
             if mask is not None:
                 out = self.global_transform(image=img, mask=mask)
-                img, mask = out['image'], out['mask']
+                img, mask = out["image"], out["mask"]
             else:
-                img = self.global_transform(image=img)['image']
+                img = self.global_transform(image=img)["image"]
 
             if self.heavy_transform:
                 if mask is not None:
                     out = self.heavy_transform(image=img, mask=mask)
-                    img, mask = out['image'], out['mask']
+                    img, mask = out["image"], out["mask"]
                 else:
-                    img = self.heavy_transform(image=img)['image']
-            
+                    img = self.heavy_transform(image=img)["image"]
+
             img = img / 255.0
             img = (img - np.min(img)) / (np.max(img) - np.min(img))
             img = img.astype(np.float32)
@@ -116,12 +136,7 @@ class ThermalDataset(Dataset):
         img = np.expand_dims(img, axis=0)
         img_t = torch.from_numpy(img).float()
         if mask is not None:
-            mask_t = torch.from_numpy(mask.astype(
-                np.int64 if self.multiclass else np.float32
-            ))
+            mask_t = torch.from_numpy(mask.astype(np.int64 if self.multiclass else np.float32))
         else:
-            mask_t = torch.zeros(
-                (self.height, self.width),
-                dtype=torch.float32
-            )
+            mask_t = torch.zeros((self.height, self.width), dtype=torch.float32)
         return img_t, mask_t
