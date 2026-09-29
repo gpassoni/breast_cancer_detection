@@ -1,0 +1,44 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+build/
+dist/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Environment and editors
+.env
+*.env
+.vscode/
+.idea/
+.DS_Store
+
+# Data, checkpoints and experiment tracking (never committed)
+/data/*
+!/data/README.md
+/checkpoints/
+checkpoints_segmentation/
+/vicreg/
+runs/
+wandb/
+logs/
+*.pth
+*.pt
+*.ckpt
+*.npy
+*.npz
+*.tar
+*.gz
+sweep_errors.txt
+
+# Local-only artifacts
+/weights/
+/outputs_cluster*/
+/best_model_saved*/
+/reports/
+.ruff_cache/
+.pytest_cache/

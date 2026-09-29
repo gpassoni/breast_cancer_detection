@@ -1,0 +1,13 @@
+.git/
+.env
+data/
+checkpoints/
+vicreg/
+wandb/
+results/
+notebooks/
+**/__pycache__/
+**/.ipynb_checkpoints/
+*.pth
+*.pt
+*.npy
